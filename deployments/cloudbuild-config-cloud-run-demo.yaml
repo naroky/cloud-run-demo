@@ -1,0 +1,15 @@
+steps:
+  # build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/vostedelista/cloud-run-demo', '.']
+  options:
+  logging: CLOUD_LOGGING_ONLY
+  # push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/vostedelista/cloud-run-demo']
+  # Deploy container image to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'deploy', 'cloud-run-demo', '--image', 'gcr.io/vostedelista/cloud-run-demo', '--region', 'asia-northeast1', '--port', '3000', '--allow-unauthenticated','--platform', 'managed', '--quiet']
+images:
+- gcr.io/vostedelista/cloud-run-demo:latest
+timeout: "1600s"
